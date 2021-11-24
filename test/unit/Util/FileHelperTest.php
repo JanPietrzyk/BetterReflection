@@ -41,4 +41,57 @@ class FileHelperTest extends TestCase
             FileHelper::normalizeSystemPath($path),
         );
     }
+
+    public function providePathData(): array {
+        return [
+            'one-dimension-all-paths' =>  [
+                [__DIR__, __DIR__, __DIR__],
+                [__DIR__, __DIR__, __DIR__],
+            ],
+            'one-dimension-no-paths' =>  [
+                [__DIR__ . 'abcdefg', __DIR__. 'abcdefg', __DIR__. 'abcdefg'],
+                [],
+            ],
+            'one-dimension-mixed-paths' =>  [
+                [__DIR__ . 'abcdefg', __DIR__, __DIR__. 'abcdefg', __DIR__],
+                [1 => __DIR__, 3 => __DIR__],
+            ],
+            'two-dimension-all-paths' =>  [
+                [[__DIR__, __DIR__], [__DIR__]],
+                [[__DIR__, __DIR__], [__DIR__]],
+            ],
+            'two-dimension-no-paths' =>  [
+                [[__DIR__ . 'abcdefg', __DIR__. 'abcdefg'], [__DIR__. 'abcdefg']],
+                [],
+            ],
+            'two-dimension-mixed-paths' =>  [
+                [[__DIR__ . 'abcdefg', __DIR__, __DIR__. 'abcdefg'], [__DIR__ . '/abcdef'], [__DIR__], [__DIR__ . '/abcdef']],
+                [[1 => __DIR__], 2 => [__DIR__]],
+            ],
+            'mixed-dimension-all-paths' =>  [
+                [[__DIR__, __DIR__], [__DIR__], __DIR__],
+                [[__DIR__, __DIR__], [__DIR__], __DIR__],
+            ],
+            'mixed-dimension-no-paths' =>  [
+                [[__DIR__ . 'abcdefg', __DIR__. 'abcdefg'], [__DIR__. 'abcdefg'], __DIR__ . 'abcdefg'],
+                [],
+            ],
+            'mixed-dimension-mixed-paths' =>  [
+                [[__DIR__ . 'abcdefg', __DIR__, __DIR__. 'abcdefg'], [__DIR__ . '/abcdef'], [__DIR__], [__DIR__ . '/abcdef'], __DIR__ . '/abcdef', __DIR__, __DIR__ . '/abcdef'],
+                [[1 => __DIR__], 2 => [__DIR__], 5 => __DIR__],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providePathData
+     */
+    public function testPathData(array $paths, array $expected)
+    {
+        self::assertSame(
+            $expected,
+            FileHelper::filterMissingDirectoryLeaves($paths)
+        );
+
+    }
 }

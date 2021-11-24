@@ -27,4 +27,26 @@ class FileHelper
 
         return ($scheme !== null ? $scheme . '://' : '') . str_replace(['/', '\\'], [DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR], $path);
     }
+
+    public static function filterMissingDirectoryLeaves(array $list): array
+    {
+        $recurse = function(array &$list) use (&$recurse) : void {
+            foreach($list as &$item) {
+                if(is_array($item)) {
+                    $recurse($item);
+                    continue;
+                }
+
+                if(!is_dir($item)) {
+                    $item = null;
+                }
+            }
+
+            $list = array_filter($list);
+        };
+
+        $recurse($list);
+
+        return $list;
+    }
 }
