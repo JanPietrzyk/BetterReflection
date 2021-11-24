@@ -10,6 +10,7 @@ use Roave\BetterReflection\SourceLocator\Type\Composer\Factory\Exception\FailedT
 use Roave\BetterReflection\SourceLocator\Type\Composer\Factory\Exception\InvalidProjectDirectory;
 use Roave\BetterReflection\SourceLocator\Type\Composer\Factory\Exception\MissingComposerJson;
 use Roave\BetterReflection\SourceLocator\Type\Composer\Factory\MakeLocatorForComposerJson;
+use Roave\BetterReflection\SourceLocator\Type\Composer\Psr\Exception\InvalidPrefixMapping;
 use Roave\BetterReflection\SourceLocator\Type\Composer\Psr\Psr0Mapping;
 use Roave\BetterReflection\SourceLocator\Type\Composer\Psr\Psr4Mapping;
 use Roave\BetterReflection\SourceLocator\Type\Composer\PsrAutoloaderLocator;
@@ -155,6 +156,17 @@ class MakeLocatorForComposerJsonTest extends TestCase
         (new MakeLocatorForComposerJson())
             ->__invoke(
                 __DIR__ . '/../../../../Assets/ComposerLocators/non-existing',
+                BetterReflectionSingleton::instance()->astLocator(),
+            );
+    }
+
+    public function testMissingButConfiguredPsr4NamespaceWillThrow(): void
+    {
+        $this->expectException(InvalidPrefixMapping::class);
+
+        (new MakeLocatorForComposerJson())
+            ->__invoke(
+                __DIR__ . '/../../../../Assets/ComposerLocators/project-with-invalid-psr4-path-definition',
                 BetterReflectionSingleton::instance()->astLocator(),
             );
     }

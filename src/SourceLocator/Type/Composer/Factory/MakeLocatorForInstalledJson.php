@@ -17,6 +17,7 @@ use Roave\BetterReflection\SourceLocator\Type\DirectoriesSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\SourceLocator;
 
+use Roave\BetterReflection\Util\FileHelper;
 use function array_filter;
 use function array_map;
 use function array_merge;
@@ -92,14 +93,14 @@ final class MakeLocatorForInstalledJson
         return new AggregateSourceLocator(array_merge(
             [
                 new PsrAutoloaderLocator(
-                    Psr4Mapping::fromArrayMappings(array_merge_recursive(
+                    Psr4Mapping::fromArrayMappings(array_merge_recursive( //here!!
                         [],
-                        ...array_map(fn (array $package): array => $this->prefixWithPackagePath(
+                        ...FileHelper::filterMissingDirectoryLeaves(array_map(fn (array $package): array => $this->prefixWithPackagePath(
                             $this->packageToPsr4AutoloadNamespaces($package),
                             $realInstallationPath,
                             $package,
                             $vendorDir,
-                        ), $installed),
+                        ), $installed)),
                     )),
                     $astLocator,
                 ),

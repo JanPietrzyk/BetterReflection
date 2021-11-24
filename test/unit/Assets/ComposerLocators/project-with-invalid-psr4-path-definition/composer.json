@@ -1,0 +1,9 @@
+{
+  "autoload": {
+    "psr-4": {
+      "ProjectA\\": "src/root_PSR-4_Sources",
+      "ProjectA\\B\\": "src/root_PSR-4_Sources",
+      "ProjectA\\C\\": "src/root_PSR-4_Missing"
+    }
+  }
+}

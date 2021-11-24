@@ -16,6 +16,7 @@ use Roave\BetterReflection\SourceLocator\Type\Composer\PsrAutoloaderLocator;
 use Roave\BetterReflection\SourceLocator\Type\DirectoriesSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\SourceLocator;
+use Roave\BetterReflection\Util\FileHelper;
 
 use function array_filter;
 use function array_map;
@@ -98,12 +99,12 @@ final class MakeLocatorForComposerJsonAndInstalledJson
                 new PsrAutoloaderLocator(
                     Psr4Mapping::fromArrayMappings(array_merge_recursive(
                         $this->prefixWithInstallationPath($this->packageToPsr4AutoloadNamespaces($composer), $realInstallationPath),
-                        ...array_map(fn (array $package): array => $this->prefixWithPackagePath(
+                        ...FileHelper::filterMissingDirectoryLeaves(array_map(fn (array $package): array => $this->prefixWithPackagePath(
                             $this->packageToPsr4AutoloadNamespaces($package),
                             $realInstallationPath,
                             $package,
                             $vendorDir,
-                        ), $installed),
+                        ), $installed)),
                     )),
                     $astLocator,
                 ),
